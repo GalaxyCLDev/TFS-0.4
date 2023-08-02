@@ -1,20 +1,20 @@
 local skullStorage = 1234 -- ID de storage para el contador de calaveras del jugador
 local skullTypeStorage = 5678 -- ID de storage para el tipo de calavera del jugador
 local skulls = {
-    [1] = {kills = 1, skullType = SKULL_YELLOW}, -- 1 kill para calavera amarilla
-    [2] = {kills = 3, skullType = SKULL_GREEN},  -- 3 kills para calavera verde
-    [3] = {kills = 5, skullType = SKULL_WHITE},  -- 5 kills para calavera blanca
-    [4] = {kills = 10, skullType = SKULL_RED}    -- 10 kills para calavera roja
+    [1] = {frags = 1, skullType = SKULL_YELLOW}, -- 1 frag para calavera amarilla
+    [2] = {frags = 3, skullType = SKULL_GREEN},  -- 3 frags para calavera verde
+    [3] = {frags = 5, skullType = SKULL_WHITE},  -- 5 frags para calavera blanca
+    [4] = {frags = 10, skullType = SKULL_RED}    -- 10 frags para calavera roja
 }
 
 function onKill(player, target)
     if isPlayer(player) and isPlayer(target) then
-        local playerKills = getCreatureStorage(player, skullStorage)
-        local newKills = playerKills + 1
-        doCreatureSetStorage(player, skullStorage, newKills)
+        local playerFrags = getCreatureStorage(player, skullStorage)
+        local newFrags = playerFrags + 1
+        doCreatureSetStorage(player, skullStorage, newFrags)
 
         for i = #skulls, 1, -1 do
-            if newKills >= skulls[i].kills and playerKills < skulls[i].kills then
+            if newFrags >= skulls[i].frags and playerFrags < skulls[i].frags then
                 doPlayerSetSkullType(player, skulls[i].skullType)
                 doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una nueva calavera!")
             end
@@ -25,15 +25,16 @@ end
 
 function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified)
     if isPlayer(player) then
-        local playerKills = getCreatureStorage(player, skullStorage)
-        if playerKills > 0 then
+        local playerFrags = getCreatureStorage(player, skullStorage)
+        if playerFrags > 0 then
             doCreatureSetStorage(player, skullStorage, 0)
             doPlayerSetSkullType(player, SKULL_NONE)
-            doPlayerSendTextMessage(player, MESSAGE_STATUS_WARNING, "Has perdido todas tus kills y tu calavera.")
+            doPlayerSendTextMessage(player, MESSAGE_STATUS_WARNING, "Has perdido todos tus frags y tu calavera.")
         end
     end
     return true
 end
+
 
 
 
