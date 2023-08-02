@@ -58,6 +58,7 @@ end
 
 
 
+
 --- Crea una carpeta llamada player_frags dentro de "data"
 
 ---- navega hasta la carpeta data/creaturescripts/scripts.
