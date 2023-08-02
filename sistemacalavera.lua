@@ -1,55 +1,35 @@
-local fragsFolder = "data/player_frags/"
+local skullStorage = 1234 -- ID de storage para el contador de calaveras del jugador
+local skullTypeStorage = 5678 -- ID de storage para el tipo de calavera del jugador
 local skulls = {
-    [1] = {frags = 10, skullName = "yellow skull"},
-    [2] = {frags = 25, skullName = "green skull"},
-    [3] = {frags = 50, skullName = "white skull"},
-    [4] = {frags = 100, skullName = "red skull"}
+    [1] = {kills = 1, skullType = SKULL_YELLOW}, -- 1 kill para calavera amarilla
+    [2] = {kills = 3, skullType = SKULL_GREEN},  -- 3 kills para calavera verde
+    [3] = {kills = 5, skullType = SKULL_WHITE},  -- 5 kills para calavera blanca
+    [4] = {kills = 10, skullType = SKULL_RED}    -- 10 kills para calavera roja
 }
 
-function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
-    if isPlayer(cid) == true then
-        local playerId = getPlayerGUID(cid)
-        local fragsFile = io.open(fragsFolder .. playerId .. ".txt", "r")
+function onKill(player, target)
+    if isPlayer(player) and isPlayer(target) then
+        local playerKills = getCreatureStorage(player, skullStorage)
+        local newKills = playerKills + 1
+        doCreatureSetStorage(player, skullStorage, newKills)
 
-        local currentFrags = 0
-        if fragsFile then
-            currentFrags = tonumber(fragsFile:read("*n"))
-            io.close(fragsFile)
-        end
-
-        local newFrags = currentFrags + 1
-        fragsFile = io.open(fragsFolder .. playerId .. ".txt", "w")
-        fragsFile:write(newFrags)
-        io.close(fragsFile)
-
-        for i = 1, #skulls do
-            if newFrags >= skulls[i].frags and currentFrags < skulls[i].frags then
-                doCreatureSetSkullType(cid, i)
-                doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una nueva calavera: " .. skulls[i].skullName .. "!")
+        for i = #skulls, 1, -1 do
+            if newKills >= skulls[i].kills and playerKills < skulls[i].kills then
+                doPlayerSetSkullType(player, skulls[i].skullType)
+                doPlayerSendTextMessage(player, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una nueva calavera!")
             end
         end
+    end
+    return true
+end
 
-        -- Aquí agregamos las recompensas cuando el jugador alcance ciertas cantidades de frags
-        if newFrags == 50 then
-            doPlayerAddItem(cid, 2140, 1) -- Añadir 1 Crystal Coin (2140)
-            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Crystal Coin (2140) como recompensa por alcanzar 50 frags!")
-        elseif newFrags == 75 then
-            doPlayerAddItem(cid, 2366, 1) -- Añadir 1 Platinum Coin (2366)
-            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Platinum Coin (2366) como recompensa por alcanzar 75 frags!")
-        elseif newFrags == 100 then
-            doPlayerAddItem(cid, 2160, 1) -- Añadir 1 Crystal Arrow (2160)
-            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Crystal Arrow (2160) como recompensa por alcanzar 100 frags!")
-        end
-
-        -- Pérdida de 1 frag al morir
-        if currentFrags > 0 then
-            newFrags = math.max(newFrags - 1, 0)
-
-            fragsFile = io.open(fragsFolder .. playerId .. ".txt", "w")
-            fragsFile:write(newFrags)
-            io.close(fragsFile)
-
-            doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Perdiste 1 frag por morir.")
+function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified)
+    if isPlayer(player) then
+        local playerKills = getCreatureStorage(player, skullStorage)
+        if playerKills > 0 then
+            doCreatureSetStorage(player, skullStorage, 0)
+            doPlayerSetSkullType(player, SKULL_NONE)
+            doPlayerSendTextMessage(player, MESSAGE_STATUS_WARNING, "Has perdido todas tus kills y tu calavera.")
         end
     end
     return true
@@ -59,7 +39,6 @@ end
 
 
 
---- Crea una carpeta llamada player_frags dentro de "data"
 
 ---- navega hasta la carpeta data/creaturescripts/scripts.
 --- Crea un nuevo archivo de texto y nómbralo COMO TU QUIERAS (ejemplo.lua)
@@ -68,11 +47,15 @@ end
 ---- navega hasta la carpeta data/creaturescripts y abre el archivo creaturescripts.xml con un editor de texto.
 
 ---- Agrega la siguiente línea dentro de la sección <event-scripts> del archivo creaturescripts.xml: 
---- <event type="death" name="addSkullForFrags" event="script" value="data/creaturescripts/scripts/deathSkulls.lua"/>
+--- <event type="kill" name="playerKillSkulls" event="script" value="playerKillSkulls.lua"/>
+--- <event type="death" name="playerKillSkullsDeath" event="script" value="playerKillSkulls.lua"/>
+
+
 
 ---- abre el archivo login.lua ubicado en data/creaturescripts/scripts.
----- Agrega la siguiente línea al final del archivo login.lua: registerCreatureEvent(cid, "addSkullForFrags")
---- registerCreatureEvent(cid, "addSkullForFrags")
+---- Agrega la siguiente línea al final del archivo login.lua:
+---     registerCreatureEvent(cid, "playerKillSkulls")
+---    registerCreatureEvent(cid, "playerKillSkullsDeath")
 
 ---- CREADO POR GALAXYDEV TFS 0.4 02-08-2023
 
