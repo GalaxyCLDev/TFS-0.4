@@ -21,6 +21,10 @@ function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
 end
 
 
+---- navega hasta la carpeta data/creaturescripts/scripts.
+--- Crea un nuevo archivo de texto y nómbralo COMO TU QUIERAS (ejemplo.lua)
+--- abres el archivo que creaste y pegas el codigo. Guardas y listo
+
 ---- navega hasta la carpeta data/creaturescripts y abre el archivo creaturescripts.xml con un editor de texto.
 
 ---- Agrega la siguiente línea dentro de la sección <event-scripts> del archivo creaturescripts.xml: 
