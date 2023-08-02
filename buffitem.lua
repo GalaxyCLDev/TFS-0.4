@@ -1,3 +1,5 @@
+--- GALAXYDEV
+
 local BUFF_DURATION = 10 * 1000 -- 10 segundos (el valor está en milisegundos)
 
 function onUse(cid, item, fromPosition, itemEx, toPosition)
