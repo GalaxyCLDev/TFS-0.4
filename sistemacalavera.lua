@@ -1,18 +1,25 @@
-local StorageporMuerte = 1234 -- Identificación de almacenamiento para jugadores asesinos (almacenamiento para el jugador matador)
-local skulls = { -- skulls ids
-	[1] = {frags = 10}, -- id 1 para yellow skull
-	[2] = {frags = 25}, -- id 2 para green skull
-	[3] = {frags = 50}, -- id 3 para white skull
-	[4] = {frags = 100} -- id 4 para red skull
+local fragsFolder = "data/player_frags/"
+local skulls = {
+	[1] = {frags = 10}, -- id 1 for yellow skull
+	[2] = {frags = 25}, -- id 2 for green skull
+	[3] = {frags = 50}, -- id 3 for white skull
+	[4] = {frags = 100} -- id 4 for red skull
 }
 
 function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
-	if isPlayer(cid) == true then -- Comprueba si la criatura muerta es un jugador.
-		local frags = getPlayerStorageValue(cid, StorageporMuerte) + 1
-		setPlayerStorageValue(cid, StorageporMuerte, frags)
+	if isPlayer(cid) == true then -- Check if the dead creature is a player
+		local playerId = getPlayerGUID(cid)
+		local fragsFile = io.open(fragsFolder .. playerId .. ".txt", "r")
+		local currentFrags = fragsFile and tonumber(fragsFile:read("*n")) or 0
+		io.close(fragsFile)
+
+		local newFrags = currentFrags + 1
+		fragsFile = io.open(fragsFolder .. playerId .. ".txt", "w")
+		fragsFile:write(newFrags)
+		io.close(fragsFile)
 
 		for i = 1, #skulls do
-			if frags >= skulls[i].frags then
+			if newFrags >= skulls[i].frags then
 				doCreatureSetSkullType(cid, i)
 			end
 		end
@@ -20,6 +27,8 @@ function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
 	return true
 end
 
+
+--- Crea una carpeta llamada player_frags dentro de "data"
 
 ---- navega hasta la carpeta data/creaturescripts/scripts.
 --- Crea un nuevo archivo de texto y nómbralo COMO TU QUIERAS (ejemplo.lua)
