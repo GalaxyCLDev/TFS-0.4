@@ -1,13 +1,13 @@
 local fragsFolder = "data/player_frags/"
 local skulls = {
-	[1] = {frags = 10}, -- id 1 for yellow skull
-	[2] = {frags = 25}, -- id 2 for green skull
-	[3] = {frags = 50}, -- id 3 for white skull
-	[4] = {frags = 100} -- id 4 for red skull
+	[1] = {frags = 10}, 
+	[2] = {frags = 25}, 
+	[3] = {frags = 50}, 
+	[4] = {frags = 100} 
 }
 
 function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
-	if isPlayer(cid) == true then -- Check if the dead creature is a player
+	if isPlayer(cid) == true then
 		local playerId = getPlayerGUID(cid)
 		local fragsFile = io.open(fragsFolder .. playerId .. ".txt", "r")
 		local currentFrags = fragsFile and tonumber(fragsFile:read("*n")) or 0
