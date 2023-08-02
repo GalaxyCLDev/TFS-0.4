@@ -1,41 +1,49 @@
 local fragsFolder = "data/player_frags/"
 local skulls = {
-	[1] = {frags = 10, skullName = "yellow skull"}, -- id 1 para yellow skull
-	[2] = {frags = 25, skullName = "green skull"}, -- id 2 para green skull
-	[3] = {frags = 50, skullName = "white skull"}, -- id 3 para white skull
-	[4] = {frags = 100, skullName = "red skull"} -- id 4 para red skull
+    [1] = {frags = 10, skullName = "yellow skull"}, -- id 1 for yellow skull
+    [2] = {frags = 25, skullName = "green skull"}, -- id 2 for green skull
+    [3] = {frags = 50, skullName = "white skull"}, -- id 3 for white skull
+    [4] = {frags = 100, skullName = "red skull"} -- id 4 for red skull
 }
 
 function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
-	if isPlayer(cid) == true then -- Revisa que sea un jugador y no un monster
-		local playerId = getPlayerGUID(cid)
-		local fragsFile = io.open(fragsFolder .. playerId .. ".txt", "r")
-		local currentFrags = fragsFile and tonumber(fragsFile:read("*n")) or 0
-		io.close(fragsFile)
+    if isPlayer(cid) == true then -- Check if the dead creature is a player
+        local playerId = getPlayerGUID(cid)
+        local fragsFile = io.open(fragsFolder .. playerId .. ".txt", "r")
 
-		local newFrags = currentFrags + 1
-		fragsFile = io.open(fragsFolder .. playerId .. ".txt", "w")
-		fragsFile:write(newFrags)
-		io.close(fragsFile)
+        local currentFrags = 0
+        if fragsFile then
+            currentFrags = tonumber(fragsFile:read("*n"))
+            io.close(fragsFile)
+        end
 
-		for i = 1, #skulls do
-			if newFrags >= skulls[i].frags and currentFrags < skulls[i].frags then
-				doCreatureSetSkullType(cid, i)
-				doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una nueva calavera: " .. skulls[i].skullName .. "!")
-			end
-		end
+        local newFrags = currentFrags + 1
+        fragsFile = io.open(fragsFolder .. playerId .. ".txt", "w")
+        fragsFile:write(newFrags)
+        io.close(fragsFile)
 
-		-- Aquí puedes agregar mensajes adicionales cuando el jugador alcance cierta cantidad de frags
-		if newFrags == 50 then
-			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has alcanzado 50 frags!")
-		end
+        for i = 1, #skulls do
+            if newFrags >= skulls[i].frags and currentFrags < skulls[i].frags then
+                doCreatureSetSkullType(cid, i)
+                doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una nueva calavera: " .. skulls[i].skullName .. "!")
+            end
+        end
 
-		if newFrags == 100 then
-			doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has alcanzado 100 frags!")
-		end
-	end
-	return true
+        -- Aquí agregamos las recompensas cuando el jugador alcance ciertas cantidades de frags
+        if newFrags == 50 then
+            doPlayerAddItem(cid, 2140, 1) -- Añadir 1 Crystal Coin (2140)
+            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Crystal Coin (2140) como recompensa por alcanzar 50 frags!")
+        elseif newFrags == 75 then
+            doPlayerAddItem(cid, 2366, 1) -- Añadir 1 Platinum Coin (2366)
+            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Platinum Coin (2366) como recompensa por alcanzar 75 frags!")
+        elseif newFrags == 100 then
+            doPlayerAddItem(cid, 2160, 1) -- Añadir 1 Crystal Arrow (2160)
+            doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Crystal Arrow (2160) como recompensa por alcanzar 100 frags!")
+        end
+    end
+    return true
 end
+
 
 
 --- Crea una carpeta llamada player_frags dentro de "data"
