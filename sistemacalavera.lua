@@ -30,3 +30,5 @@ end
 ---- Agrega la siguiente línea al final del archivo login.lua: registerCreatureEvent(cid, "addSkullForFrags")
 --- registerCreatureEvent(cid, "addSkullForFrags")
 
+---- CREADO POR GALAXYDEV TFS 0.4 02-08-2023
+
