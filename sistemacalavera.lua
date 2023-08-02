@@ -42,6 +42,7 @@ end
 
 
 
+
 ---- navega hasta la carpeta data/creaturescripts/scripts.
 --- Crea un nuevo archivo de texto y nómbralo COMO TU QUIERAS (ejemplo.lua)
 --- abres el archivo que creaste y pegas el codigo. Guardas y listo
