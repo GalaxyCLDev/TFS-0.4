@@ -1,5 +1,2 @@
 ## AQUI SE COMENZARA A TRABAJAR EN ARCHIVOS TFS 0.4
 
-## SCRIPTS DISPONIBLES
--- palanca shop v 0.0
-   * no probada
