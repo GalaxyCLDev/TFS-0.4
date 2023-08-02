@@ -1,13 +1,13 @@
 local fragsFolder = "data/player_frags/"
 local skulls = {
-    [1] = {frags = 10, skullName = "yellow skull"}, -- id 1 for yellow skull
-    [2] = {frags = 25, skullName = "green skull"}, -- id 2 for green skull
-    [3] = {frags = 50, skullName = "white skull"}, -- id 3 for white skull
-    [4] = {frags = 100, skullName = "red skull"} -- id 4 for red skull
+    [1] = {frags = 10, skullName = "yellow skull"},
+    [2] = {frags = 25, skullName = "green skull"},
+    [3] = {frags = 50, skullName = "white skull"},
+    [4] = {frags = 100, skullName = "red skull"}
 }
 
 function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
-    if isPlayer(cid) == true then -- Check if the dead creature is a player
+    if isPlayer(cid) == true then
         local playerId = getPlayerGUID(cid)
         local fragsFile = io.open(fragsFolder .. playerId .. ".txt", "r")
 
@@ -40,9 +40,21 @@ function onDeath(cid, corpse, lastHitKiller, mostDamageKiller)
             doPlayerAddItem(cid, 2160, 1) -- Añadir 1 Crystal Arrow (2160)
             doPlayerSendTextMessage(cid, MESSAGE_EVENT_ADVANCE, "¡Has obtenido una Crystal Arrow (2160) como recompensa por alcanzar 100 frags!")
         end
+
+        -- Pérdida de 1 frag al morir
+        if currentFrags > 0 then
+            newFrags = math.max(newFrags - 1, 0)
+
+            fragsFile = io.open(fragsFolder .. playerId .. ".txt", "w")
+            fragsFile:write(newFrags)
+            io.close(fragsFile)
+
+            doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, "Perdiste 1 frag por morir.")
+        end
     end
     return true
 end
+
 
 
 
