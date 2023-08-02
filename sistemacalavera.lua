@@ -1,10 +1,10 @@
 local skullStorage = 1234 -- ID de storage para el contador de calaveras del jugador
 local skullTypeStorage = 5678 -- ID de storage para el tipo de calavera del jugador
 local skulls = {
-    [1] = {frags = 1, skullType = SKULL_YELLOW}, -- 1 frag para calavera amarilla
-    [2] = {frags = 3, skullType = SKULL_GREEN},  -- 3 frags para calavera verde
-    [3] = {frags = 5, skullType = SKULL_WHITE},  -- 5 frags para calavera blanca
-    [4] = {frags = 10, skullType = SKULL_RED}    -- 10 frags para calavera roja
+    {frags = 1, skullType = SKULL_YELLOW}, -- 1 frag para calavera amarilla
+    {frags = 3, skullType = SKULL_GREEN},  -- 3 frags para calavera verde
+    {frags = 5, skullType = SKULL_WHITE},  -- 5 frags para calavera blanca
+    {frags = 10, skullType = SKULL_RED}    -- 10 frags para calavera roja
 }
 
 function onKill(player, target)
@@ -34,6 +34,7 @@ function onDeath(player, corpse, killer, mostDamageKiller, lastHitUnjustified)
     end
     return true
 end
+
 
 
 
