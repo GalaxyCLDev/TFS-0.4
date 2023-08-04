@@ -12,9 +12,9 @@ function applyBuff(cid)
     -- Aplica la mejora de vida, maná y habilidades.
     doCreatureAddHealth(cid, 200) -- Aumenta 200 puntos de vida.
     doCreatureAddMana(cid, 100)   -- Aumenta 100 puntos de maná.
-    doPlayerAddSkillTry(cid, SKILL_FIST, 50) -- Aumenta 50 intentos de habilidad de puño.
-    doPlayerAddSkillTry(cid, SKILL_SWORD, 50) -- Aumenta 50 intentos de habilidad de espada.
-    doPlayerAddSkillTry(cid, SKILL_AXE, 50) -- Aumenta 50 intentos de habilidad de hacha.
+    doPlayerAddSkillLevel(cid, SKILL_FIST, 5) -- Aumenta el nivel de habilidad de puño en 5.
+    doPlayerAddSkillLevel(cid, SKILL_SWORD, 5) -- Aumenta el nivel de habilidad de espada en 5.
+    doPlayerAddSkillLevel(cid, SKILL_AXE, 5) -- Aumenta el nivel de habilidad de hacha en 5.
 
     -- Crea una condición que removerá los efectos de la mejora después del tiempo de duración.
     addEvent(function()
@@ -42,6 +42,7 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
     applyBuff(cid)
     return true
 end
+
 
 
 
