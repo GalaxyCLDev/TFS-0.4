@@ -20,12 +20,17 @@ function applyBuff(cid)
     addEvent(function()
         if isCreature(cid) then
             local conditions = getCreatureConditions(cid)
+            local hasHasteCondition = false
             for _, condition in ipairs(conditions) do
                 if condition.conditionType == CONDITIONID_HASTE then
-                    doRemoveCondition(cid, CONDITIONID_HASTE)
-                    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "La mejora ha desaparecido.")
+                    hasHasteCondition = true
                     break
                 end
+            end
+
+            if hasHasteCondition then
+                doRemoveCondition(cid, CONDITIONID_HASTE)
+                doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "La mejora ha desaparecido.")
             end
         end
     end, BUFF_DURATION)
@@ -38,10 +43,6 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
     return true
 end
 
-function onLogin(cid)
-    applyBuff(cid)
-    return true
-end
 
 
 
