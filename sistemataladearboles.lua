@@ -56,3 +56,16 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 
     return false
 end
+
+---- TABLA DE BASE DE DATOS QUE DEBES CREAR ----
+
+CREATE TABLE `player_tree_cutting_stats`
+(
+    `player_id` INT NOT NULL,
+    `trees_cut` INT NOT NULL DEFAULT 0,
+    `tree_cutting_level` TINYINT(1) NOT NULL DEFAULT 1,
+    `next_level_trees` INT NOT NULL DEFAULT 100,
+    PRIMARY KEY (`player_id`),
+    FOREIGN KEY (`player_id`) REFERENCES `players`(`id`) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
