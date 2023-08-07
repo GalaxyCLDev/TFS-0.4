@@ -9,11 +9,27 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
     if item.itemid == HACHA_TALAR_ID then
         -- Verificar si el objeto objetivo es un árbol para talar
         if isInArray(ARBOLES_TALAR, itemEx.itemid) then
-            -- Iniciar el proceso de tala del árbol
+            -- Calcular la probabilidad de éxito (puedes ajustar este valor según tu preferencia)
+            local PROBABILIDAD_EXITO = 80
+            if math.random(1, 100) <= PROBABILIDAD_EXITO then
+                -- Árbol talado con éxito
 
-            -- Aquí puedes poner el código para el proceso de tala
-            -- Por ejemplo, eliminar el árbol y otorgar recompensas al jugador
-            -- (madera, experiencia, etc.)
+                -- Eliminar el árbol del mapa
+                doRemoveItem(itemEx.uid)
+
+                -- Recompensas para el jugador (ejemplo: otorgar madera)
+                doPlayerAddItem(cid, 1234, 5) -- ID de la madera y cantidad a otorgar
+
+                -- Puedes agregar aquí otras recompensas, como experiencia o ítems adicionales
+
+                -- Mensaje de éxito al jugador
+                doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Has talado el árbol con éxito.")
+            else
+                -- Fallo al talar el árbol
+
+                -- Mensaje de fallo al jugador
+                doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Has fallado al talar el árbol.")
+            end
 
             return true
         end
