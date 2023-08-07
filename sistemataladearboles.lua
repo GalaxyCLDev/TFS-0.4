@@ -20,7 +20,26 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
                 -- Recompensas para el jugador (ejemplo: otorgar madera)
                 doPlayerAddItem(cid, 1234, 5) -- ID de la madera y cantidad a otorgar
 
-                -- Puedes agregar aquí otras recompensas, como experiencia o ítems adicionales
+                -- Verificar y actualizar el nivel del jugador
+                local playerGUID = getPlayerGUID(cid)
+                local treesCut = db.getResult("SELECT trees_cut FROM player_tree_cutting_stats WHERE player_id = " .. playerGUID):getDataInt("trees_cut")
+
+                local nextLevelTrees = 0
+                local nextLevel = 0
+
+                if treesCut >= 100 and treesCut < 250 then
+                    nextLevelTrees = 250
+                    nextLevel = 2
+                elseif treesCut >= 250 and treesCut < 500 then
+                    nextLevelTrees = 500
+                    nextLevel = 3
+                -- Agrega más niveles según sea necesario
+                end
+
+                if nextLevel > 0 then
+                    db.executeQuery("UPDATE player_tree_cutting_stats SET tree_cutting_level = " .. nextLevel .. ", next_level_trees = " .. nextLevelTrees .. " WHERE player_id = " .. playerGUID)
+                    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "¡Has subido al nivel " .. nextLevel .. " de tala de árboles!")
+                end
 
                 -- Mensaje de éxito al jugador
                 doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Has talado el árbol con éxito.")
