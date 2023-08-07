@@ -20,25 +20,35 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
                 -- Recompensas para el jugador (ejemplo: otorgar madera)
                 doPlayerAddItem(cid, 1234, 5) -- ID de la madera y cantidad a otorgar
 
-                -- Verificar y actualizar el nivel del jugador
-                local playerGUID = getPlayerGUID(cid)
-                local treesCut = db.getResult("SELECT trees_cut FROM player_tree_cutting_stats WHERE player_id = " .. playerGUID):getDataInt("trees_cut")
-
-                local nextLevelTrees = 0
-                local nextLevel = 0
-
-                if treesCut >= 100 and treesCut < 250 then
-                    nextLevelTrees = 250
-                    nextLevel = 2
-                elseif treesCut >= 250 and treesCut < 500 then
-                    nextLevelTrees = 500
-                    nextLevel = 3
-                -- Agrega más niveles según sea necesario
-                end
-
-                if nextLevel > 0 then
-                    db.executeQuery("UPDATE player_tree_cutting_stats SET tree_cutting_level = " .. nextLevel .. ", next_level_trees = " .. nextLevelTrees .. " WHERE player_id = " .. playerGUID)
-                    doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "¡Has subido al nivel " .. nextLevel .. " de tala de árboles!")
+                -- Actualizar estadísticas y niveles
+                local playerId = getPlayerGUID(cid)
+                local stats = db.getResult("SELECT * FROM player_tree_cutting_stats WHERE player_id = " .. playerId)
+                if stats:getID() == -1 then
+                    -- Insertar nuevas estadísticas si no existen
+                    db.executeQuery("INSERT INTO player_tree_cutting_stats (player_id, trees_cut) VALUES (" .. playerId .. ", 1)")
+                else
+                    local treesCut = stats:getDataInt("trees_cut") + 1
+                    local currentLevel = stats:getDataInt("tree_cutting_level")
+                    local nextLevelTrees = stats:getDataInt("next_level_trees")
+                    
+                    -- Actualizar estadísticas
+                    db.executeQuery("UPDATE player_tree_cutting_stats SET trees_cut = " .. treesCut .. " WHERE player_id = " .. playerId)
+                    
+                    -- Verificar si el jugador sube de nivel
+                    if treesCut >= nextLevelTrees and currentLevel < 5 then
+                        -- Subir de nivel y reiniciar estadísticas
+                        local newLevel = currentLevel + 1
+                        local newNextLevelTrees = nextLevelTrees + 150
+                        
+                        -- Actualizar nivel en la tabla players
+                        db.executeQuery("UPDATE players SET tree_cutting_level = " .. newLevel .. " WHERE id = " .. playerId)
+                        
+                        -- Reiniciar estadísticas en la tabla player_tree_cutting_stats
+                        db.executeQuery("UPDATE player_tree_cutting_stats SET trees_cut = 0, tree_cutting_level = " .. newLevel .. ", next_level_trees = " .. newNextLevelTrees .. " WHERE player_id = " .. playerId)
+                        
+                        -- Mensaje al jugador
+                        doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "¡Has subido al nivel " .. newLevel .. " de tala de árboles!")
+                    end
                 end
 
                 -- Mensaje de éxito al jugador
@@ -57,7 +67,11 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
     return false
 end
 
+
 ---- TABLA DE BASE DE DATOS QUE DEBES CREAR ----
+
+ALTER TABLE `players`
+ADD COLUMN `tree_cutting_level` TINYINT(1) NOT NULL DEFAULT 1;
 
 CREATE TABLE `player_tree_cutting_stats`
 (
