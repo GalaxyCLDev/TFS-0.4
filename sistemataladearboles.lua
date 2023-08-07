@@ -1,4 +1,5 @@
 function onUse(cid, item, fromPosition, itemEx, toPosition)
+    print("onUse Llama ala funcion")
     -- ID del hacha para talar
     local HACHA_TALAR_ID = 2380
 
@@ -7,11 +8,14 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 
     -- Verificar si el ítem utilizado es el hacha de talar
     if item.itemid == HACHA_TALAR_ID then
+        print("Hacha de talar utilizada")
         -- Verificar si el objeto objetivo es un árbol para talar
         if isInArray(ARBOLES_TALAR, itemEx.itemid) then
+            print("Objetivo es un árbol para talar")
             -- Calcular la probabilidad de éxito (puedes ajustar este valor según tu preferencia)
             local PROBABILIDAD_EXITO = 80
             if math.random(1, 100) <= PROBABILIDAD_EXITO then
+                print("Árbol talado con éxito")
                 -- Árbol talado con éxito
 
                 -- Eliminar el árbol del mapa
@@ -61,11 +65,13 @@ function onUse(cid, item, fromPosition, itemEx, toPosition)
 
                 -- Mensaje de éxito al jugador
                 doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Has talado el árbol con éxito.")
+                
             else
                 -- Fallo al talar el árbol
 
                 -- Mensaje de fallo al jugador
                 doPlayerSendTextMessage(cid, MESSAGE_STATUS_CONSOLE_BLUE, "Has fallado al talar el árbol.")
+                
             end
 
             return true
