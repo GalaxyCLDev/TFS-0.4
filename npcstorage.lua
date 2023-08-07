@@ -1,4 +1,10 @@
-local REQUIRED_STORAGE = 1001 -- Cambia este valor al storage que desees usar
+local requiredStorages = {
+    {id = 1001, message = "la primera misión"},
+    {id = 1002, message = "la segunda misión"},
+    {id = 1003, message = "la tercera misión"},
+    {id = 1004, message = "la cuarta misión"},
+    {id = 1005, message = "la quinta misión"}
+}
 
 function onCreatureAppear(cid)
 end
@@ -7,13 +13,33 @@ function onCreatureDisappear(cid)
 end
 
 function onCreatureSay(cid, type, msg)
-    if msg == "hi" then
-        if getPlayerStorageValue(cid, REQUIRED_STORAGE) == 1 then
-            selfSay("Hola! ¿En qué puedo ayudarte?", cid)
+    if msg:lower() == "hi" then
+        local missingStorages = getMissingStorages(cid, requiredStorages)
+        if #missingStorages == 0 then
+            selfSay("¡Hola, |PLAYERNAME|! Bienvenido. Aquí tienes un pequeño obsequio.", cid)
+            doPlayerAddItem(cid, 2140, 1) -- Agregar un ítem al jugador (ID 2140)
         else
-            selfSay("Hola! Lamento decirte que necesitas completar una misión antes de que pueda hablar contigo.", cid)
+            local message = "Lo siento, pero necesitas completar "
+            for i, storage in ipairs(missingStorages) do
+                if i == #missingStorages then
+                    message = message .. storage.message .. " antes de hablar conmigo."
+                else
+                    message = message .. storage.message .. ", "
+                end
+            end
+            selfSay(message, cid)
         end
     end
+end
+
+function getMissingStorages(cid, storages)
+    local missingStorages = {}
+    for _, storage in ipairs(storages) do
+        if getPlayerStorageValue(cid, storage.id) ~= 1 then
+            table.insert(missingStorages, storage)
+        end
+    end
+    return missingStorages
 end
 
 function onPlayerCloseChannel(cid)
@@ -23,21 +49,4 @@ function onPlayerEndTrade(cid)
 end
 
 function onThink()
-end
-
-function onUse(cid, item, fromPosition, itemEx, toPosition)
-    if getDistanceTo(cid, toPosition) > 3 then
-        return false
-    end
-    
-    if getPlayerStorageValue(cid, REQUIRED_STORAGE) == 1 then
-        if getPlayerItemCount(cid, 2140) == 0 then
-            doPlayerAddItem(cid, 2140, 1)
-            selfSay("Aquí tienes un regalo! ¡Disfrútalo!", cid)
-        else
-            selfSay("Ya tienes uno, no puedo darte más.", cid)
-        end
-    else
-        selfSay("Lo siento, ¡necesitas completar una misión primero!", cid)
-    end
 end
