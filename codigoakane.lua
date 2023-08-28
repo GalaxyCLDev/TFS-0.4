@@ -1,4 +1,4 @@
-local isRunning = false
+local isRunning = {}
 
 local monstros = {"Demon", "Triple Medusa"}
 local messages = {
@@ -28,17 +28,17 @@ local function crearMonster(monstruo)
         print("Monstruo creado.")
     end
 
-    isRunning = false
+    isRunning[monstruo] = false
 end
 
 function onStatsChange(cid, attacker, type, combat, value)
     if isMonster(cid) and isPlayer(attacker) then
         local hpPorcentaje = (getCreatureHealth(cid) / getCreatureMaxHealth(cid)) * 100
-        if hpPorcentaje < config.maxPorcentaje and not isRunning then
+        if hpPorcentaje < config.maxPorcentaje and not isRunning[cid] then
             if config.mostrarMsgs then
                 print("Enviando addEvent...")
             end
-            isRunning = true
+            isRunning[cid] = true
             addEvent(crearMonster, config.segundos * 1000, cid)
         end
     end
